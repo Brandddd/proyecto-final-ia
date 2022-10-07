@@ -8,8 +8,8 @@ Esto es un codigo elaborado en la clase de Ingeligencia artificial, como proyect
 
 ## Librerías usadas
 
-Python tuttle (elementos gráficos)
-Python random 
+- Python tuttle (elementos gráficos)
+- Python random 
 
 ## ¿Cómo iniciar? 
 
