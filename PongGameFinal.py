@@ -62,7 +62,7 @@ p1 = QLearningPlayer()
 # VENTANA:
 ventana = turtle.Screen()  # Declaracion de la variable tipo ventana
 # Nombre del titulo de la ventana
-ventana.title("Pong Game por Brandon David Palacio Alvarez. ")
+ventana.title("Pong Game por Brandon David Alvarez. ")
 ventana.bgcolor("black")  # Color del fondo
 ventana.setup(width=800, height=600)  # Tamaño de ventana
 ventana.tracer(0)  # Hace que se vea todo más fluido
@@ -82,16 +82,6 @@ jugador1.goto(-390, 0)  # Posicion inicial del jugador 1
 # Tamaño del jugador u objeto
 jugador1.shapesize(stretch_wid=5, stretch_len=1.5)
 
-'''
-#Jugador 2:
-jugador2 = turtle.Turtle() #Crear Figura en el modulo Turtle
-jugador2.speed(0)   #Aparece de manera instantanea
-jugador2.shape("square")   #Forma del jugador u objeto
-jugador2.color("white")    #Color del jugador u objeto
-jugador2.penup()           #Evitar que se cree una linea en el rastro del objeto
-jugador2.goto(350,0)      #Posicion inicial del jugador 2
-jugador2.shapesize(stretch_wid=300,stretch_len=0.5)   #Tamaño del jugador u objeto'''
-
 # Pelota:
 pelota = turtle.Turtle()  # Crear Figura en el modulo Turtle
 pelota.speed(0)  # Aparece de manera instantanea
@@ -106,12 +96,6 @@ pelota.shapesize(stretch_wid=0.8, stretch_len=0.8)
 pelota.dx = 0.3  # Cambio en X cada 3 pixeles.
 pelota.dy = 0.3  # Cambio en y cada 3 pixeles.
 
-'''#Linea de la mitad:
-division = turtle.Turtle() #Crea figura en el modulo turtle
-division.color("white")    #Color de la figura
-division.goto(0,400)       #Posicion
-division.goto(0,-400)      #Posicion'''
-
 # Texto de jugadores:
 pen = turtle.Turtle()
 pen.speed(0)
@@ -123,40 +107,12 @@ pen.write("Player QLearning, Fallas: {}".format(
     intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
 
 # Funciones para dar movimiento a los jugadores
-'''def jugador1Arriba ():     #Funcion que me va mover jugador hacia arriba
-    y = jugador1.ycor()    #Obtencion de la coordeanada del jugador
-    y += 5                 #Cada que se aumenta la Y en positivo se va hacia arriba
-    jugador1.sety(y)       #Actualiza la coordenada en el eje Y
-
-def jugador1Abajo ():      #Funcion que me va mover jugador hacia arriba
-    y = jugador1.ycor()    #Obtencion de la coordeanada del jugador
-    y -= 5                 #Cada que se aumenta la Y en positivo se va hacia arriba
-    jugador1.sety(y)       #Actualiza la coordenada en el eje Y
-
-def jugador2Arriba ():     #Funcion que me va mover jugador hacia arriba
-    y = jugador2.ycor()    #Obtencion de la coordeanada del jugador
-    y += 40                #Cada que se aumenta la Y en positivo se va hacia arriba
-    jugador2.sety(y)       #Actualiza la coordenada en el eje Y
-
-def jugador2Abajo ():      #Funcion que me va mover jugador hacia arriba
-    y = jugador2.ycor()    #Obtencion de la coordeanada del jugador
-    y -= 40                #Cada que se aumenta la Y en positivo se va hacia arriba
-    jugador2.sety(y)       #Actualiza la coordenada en el eje Y'''
-
 
 def movement(move):
     y = jugador1.ycor()  # Obtencion de la coordeanada del jugador
     y += 5 * move  # Cada que se aumenta la Y en positivo se va hacia arriba
     jugador1.sety(y)  # Actualiza la coordenada en el eje Y
     # Actualiza la coordenada en el eje Y
-
-# Conectar teclado al programa:
-# ventana.listen()      #Escucha que esta pasando dentro de ella (Eventos)
-# ventana.onkeypress(jugador1Arriba, "w")   #Evento que captura al momento de presionar la tecla.
-#ventana.onkeypress(jugador1Abajo, "s")
-#ventana.onkeypress(jugador2Arriba, "Up")
-#ventana.onkeypress(jugador2Abajo, "Down")
-
 
 while True:  # Bucle principal para evitar que la ventana se cierre automaticamente tan pronto se ejecute e juego
     ventana.update()
@@ -183,12 +139,6 @@ while True:  # Bucle principal para evitar que la ventana se cierre automaticame
         jugador1.sety(-290)
 
     # Bordes derecha/izquierda:
-    '''if pelota.xcor() > 390:
-        pelota.goto(0,0)
-        pelota.dx *= -1         #Hace que la pelota cuando pierde se vaya en direcciones invertidas.
-        #intentos += 1
-        pen.clear()             #Evita que se sobreescriba los datos impresos en pantalla.
-        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))'''
 
     if pelota.xcor() < -390:
         pelota.goto(0, 0)
