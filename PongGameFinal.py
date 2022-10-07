@@ -7,10 +7,10 @@ class QLearningPlayer():
     def __init__(self, epsilon=0.2, alpha=0.3, gamma=0.9):
         self.breed = "Qlearner"
         self.harm_humans = False
-        self.q = {}  # (state, action) keys: Q values
-        self.epsilon = epsilon  # e-greedy chance of random exploration
-        self.alpha = alpha  # learning rate
-        self.gamma = gamma  # discount factor for future rewards
+        self.q = {}
+        self.epsilon = epsilon
+        self.alpha = alpha
+        self.gamma = gamma
 
     def available_moves(self, enviroment):
         return [0, 1, -1]
@@ -20,7 +20,6 @@ class QLearningPlayer():
         self.last_move = None
 
     def getQ(self, state, action):
-        # encourage exploration; "optimistic" 1.0 initial values
         if self.q.get((state, action)) is None:
             self.q[(state, action)] = 1.0
         return self.q.get((state, action))
@@ -29,7 +28,7 @@ class QLearningPlayer():
         self.last_enviroment = tuple(enviroment)
         actions = self.available_moves(enviroment)
 
-        if random.random() < self.epsilon:  # explore!
+        if random.random() < self.epsilon:
             self.last_move = random.choice(actions)
             return self.last_move
 
@@ -37,7 +36,6 @@ class QLearningPlayer():
         maxQ = max(qs)
 
         if qs.count(maxQ) > 1:
-            # more than 1 best option; choose among them randomly
             best_options = [i for i in range(len(actions)) if qs[i] == maxQ]
             i = random.choice(best_options)
         else:
@@ -121,7 +119,7 @@ pen.color("lightgrey")
 pen.penup()
 pen.hideturtle()
 pen.goto(0, 260)
-pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+pen.write("Player QLearning, Fallas: {}".format(
     intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
 
 # Funciones para dar movimiento a los jugadores
@@ -197,7 +195,7 @@ while True:  # Bucle principal para evitar que la ventana se cierre automaticame
         pelota.dx *= -1  # Hace que la pelota cuando pierde se vaya en direcciones invertidas
         intentos += 1
         pen.clear()  # Evita que se sobreescriba los datos impresos en pantalla
-        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+        pen.write("Player QLearning, Fallas: {}".format(
             intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
 
     # Condiciones para el choque con las barras jugador 1 y jugador 2:
@@ -207,6 +205,6 @@ while True:  # Bucle principal para evitar que la ventana se cierre automaticame
     if (pelota.xcor() < -340 and pelota.xcor() > -350) and (pelota.ycor() < jugador1.ycor() + 50 and pelota.ycor() > jugador1.ycor() - 50):
         aciertos += 1
         pen.clear()
-        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+        pen.write("Player QLearning, Fallas: {}".format(
             intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
         pelota.dx *= -1
