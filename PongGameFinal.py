@@ -1,0 +1,212 @@
+import turtle
+import random
+
+
+class QLearningPlayer():
+
+    def __init__(self, epsilon=0.2, alpha=0.3, gamma=0.9):
+        self.breed = "Qlearner"
+        self.harm_humans = False
+        self.q = {}  # (state, action) keys: Q values
+        self.epsilon = epsilon  # e-greedy chance of random exploration
+        self.alpha = alpha  # learning rate
+        self.gamma = gamma  # discount factor for future rewards
+
+    def available_moves(self, enviroment):
+        return [0, 1, -1]
+
+    def start_game(self, char):
+        self.last_enviroment = (' ',) * 5
+        self.last_move = None
+
+    def getQ(self, state, action):
+        # encourage exploration; "optimistic" 1.0 initial values
+        if self.q.get((state, action)) is None:
+            self.q[(state, action)] = 1.0
+        return self.q.get((state, action))
+
+    def move(self, enviroment):
+        self.last_enviroment = tuple(enviroment)
+        actions = self.available_moves(enviroment)
+
+        if random.random() < self.epsilon:  # explore!
+            self.last_move = random.choice(actions)
+            return self.last_move
+
+        qs = [self.getQ(self.last_enviroment, a) for a in actions]
+        maxQ = max(qs)
+
+        if qs.count(maxQ) > 1:
+            # more than 1 best option; choose among them randomly
+            best_options = [i for i in range(len(actions)) if qs[i] == maxQ]
+            i = random.choice(best_options)
+        else:
+            i = qs.index(maxQ)
+
+        self.last_move = actions[i]
+        return actions[i]
+
+    def reward(self, value, enviroment):
+        if self.last_move:
+            self.learn(self.last_enviroment, self.last_move,
+                       value, tuple(enviroment))
+
+    def learn(self, state, action, reward, result_state):
+        prev = self.getQ(state, action)
+        maxqnew = max([self.getQ(result_state, a)
+                      for a in self.available_moves(state)])
+        self.q[(state, action)] = prev + self.alpha * \
+            ((reward + self.gamma*maxqnew) - prev)
+
+
+p1 = QLearningPlayer()
+
+# VENTANA:
+ventana = turtle.Screen()  # Declaracion de la variable tipo ventana
+# Nombre del titulo de la ventana
+ventana.title("Pong Game por Brandon David Palacio Alvarez. ")
+ventana.bgcolor("black")  # Color del fondo
+ventana.setup(width=800, height=600)  # Tamaño de ventana
+ventana.tracer(0)  # Hace que se vea todo más fluido
+
+# Marcador(intentos):
+intentos = 0
+aciertos = 0
+#marcador2 = 0
+
+# Jugador 1:
+jugador1 = turtle.Turtle()  # Crear Figura en el modulo Turtle
+jugador1.speed(0)  # Aparece de manera instantanea
+jugador1.shape("square")  # Forma del jugador u objeto
+jugador1.color("white")  # Color del jugador u objeto
+jugador1.penup()  # Evitar que se cree una linea en el rastro del objeto
+jugador1.goto(-390, 0)  # Posicion inicial del jugador 1
+# Tamaño del jugador u objeto
+jugador1.shapesize(stretch_wid=5, stretch_len=1.5)
+
+'''
+#Jugador 2:
+jugador2 = turtle.Turtle() #Crear Figura en el modulo Turtle
+jugador2.speed(0)   #Aparece de manera instantanea
+jugador2.shape("square")   #Forma del jugador u objeto
+jugador2.color("white")    #Color del jugador u objeto
+jugador2.penup()           #Evitar que se cree una linea en el rastro del objeto
+jugador2.goto(350,0)      #Posicion inicial del jugador 2
+jugador2.shapesize(stretch_wid=300,stretch_len=0.5)   #Tamaño del jugador u objeto'''
+
+# Pelota:
+pelota = turtle.Turtle()  # Crear Figura en el modulo Turtle
+pelota.speed(0)  # Aparece de manera instantanea
+pelota.shape("circle")  # Forma del jugador u objeto
+pelota.color("red")  # Color del jugador u objeto
+pelota.penup()  # Evitar que se cree una linea en el rastro del objeto
+pelota.goto(0, 0)  # Posicion inicial del objeto
+# Tamaño del jugador u objeto
+pelota.shapesize(stretch_wid=0.8, stretch_len=0.8)
+
+# Mover pelota:
+pelota.dx = 0.3  # Cambio en X cada 3 pixeles.
+pelota.dy = 0.3  # Cambio en y cada 3 pixeles.
+
+'''#Linea de la mitad:
+division = turtle.Turtle() #Crea figura en el modulo turtle
+division.color("white")    #Color de la figura
+division.goto(0,400)       #Posicion
+division.goto(0,-400)      #Posicion'''
+
+# Texto de jugadores:
+pen = turtle.Turtle()
+pen.speed(0)
+pen.color("lightgrey")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+    intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
+
+# Funciones para dar movimiento a los jugadores
+'''def jugador1Arriba ():     #Funcion que me va mover jugador hacia arriba
+    y = jugador1.ycor()    #Obtencion de la coordeanada del jugador
+    y += 5                 #Cada que se aumenta la Y en positivo se va hacia arriba
+    jugador1.sety(y)       #Actualiza la coordenada en el eje Y
+
+def jugador1Abajo ():      #Funcion que me va mover jugador hacia arriba
+    y = jugador1.ycor()    #Obtencion de la coordeanada del jugador
+    y -= 5                 #Cada que se aumenta la Y en positivo se va hacia arriba
+    jugador1.sety(y)       #Actualiza la coordenada en el eje Y
+
+def jugador2Arriba ():     #Funcion que me va mover jugador hacia arriba
+    y = jugador2.ycor()    #Obtencion de la coordeanada del jugador
+    y += 40                #Cada que se aumenta la Y en positivo se va hacia arriba
+    jugador2.sety(y)       #Actualiza la coordenada en el eje Y
+
+def jugador2Abajo ():      #Funcion que me va mover jugador hacia arriba
+    y = jugador2.ycor()    #Obtencion de la coordeanada del jugador
+    y -= 40                #Cada que se aumenta la Y en positivo se va hacia arriba
+    jugador2.sety(y)       #Actualiza la coordenada en el eje Y'''
+
+
+def movement(move):
+    y = jugador1.ycor()  # Obtencion de la coordeanada del jugador
+    y += 5 * move  # Cada que se aumenta la Y en positivo se va hacia arriba
+    jugador1.sety(y)  # Actualiza la coordenada en el eje Y
+    # Actualiza la coordenada en el eje Y
+
+# Conectar teclado al programa:
+# ventana.listen()      #Escucha que esta pasando dentro de ella (Eventos)
+# ventana.onkeypress(jugador1Arriba, "w")   #Evento que captura al momento de presionar la tecla.
+#ventana.onkeypress(jugador1Abajo, "s")
+#ventana.onkeypress(jugador2Arriba, "Up")
+#ventana.onkeypress(jugador2Abajo, "Down")
+
+
+while True:  # Bucle principal para evitar que la ventana se cierre automaticamente tan pronto se ejecute e juego
+    ventana.update()
+
+    # Aumentando coordenada X de la pelota por los 3 pixeles definidos arriba
+    pelota.setx(pelota.xcor() + pelota.dx)
+    # Aumentando coordenada X de la pelota por los 3 pixeles definidos arriba
+    pelota.sety(pelota.ycor() + pelota.dy)
+
+    enviroment = (int(pelota.xcor()), int(pelota.ycor()), int(jugador1.ycor()))
+    movement(p1.move(enviroment))
+    # Bordes:
+    if pelota.ycor() > 290:
+        pelota.dy *= -1
+    if pelota.ycor() < -290:
+        pelota.dy *= -1
+
+    if (jugador1.ycor() + 5) > 290:
+        # Asegura que el jugador no se salga de la pantalla.
+        jugador1.sety(290)
+
+    if (jugador1.ycor() + 5) < -290:
+        # Asegura que el jugador no se salga de la pantalla.
+        jugador1.sety(-290)
+
+    # Bordes derecha/izquierda:
+    '''if pelota.xcor() > 390:
+        pelota.goto(0,0)
+        pelota.dx *= -1         #Hace que la pelota cuando pierde se vaya en direcciones invertidas.
+        #intentos += 1
+        pen.clear()             #Evita que se sobreescriba los datos impresos en pantalla.
+        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))'''
+
+    if pelota.xcor() < -390:
+        pelota.goto(0, 0)
+        pelota.dx *= -1  # Hace que la pelota cuando pierde se vaya en direcciones invertidas
+        intentos += 1
+        pen.clear()  # Evita que se sobreescriba los datos impresos en pantalla
+        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+            intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
+
+    # Condiciones para el choque con las barras jugador 1 y jugador 2:
+    if (pelota.xcor() > 340 and pelota.xcor() < 350):
+        pelota.dx *= -1
+
+    if (pelota.xcor() < -340 and pelota.xcor() > -350) and (pelota.ycor() < jugador1.ycor() + 50 and pelota.ycor() > jugador1.ycor() - 50):
+        aciertos += 1
+        pen.clear()
+        pen.write("Player QLearning, Fallas: {} Aciertos {}".format(
+            intentos, aciertos), align="center", font=("Lucida Console", 24, "normal"))
+        pelota.dx *= -1
